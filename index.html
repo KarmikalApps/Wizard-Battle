@@ -1,0 +1,677 @@
+<!--
+    [ Wizard Battle ]
+    Contributor: Karmikal Apps
+-->
+<html lang="en">
+<head>
+    <meta name="fragment" content="!">
+    <meta charset="UTF-8">
+    <title>[ Wizard Battle ]</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta name="description"
+          content="Defeat the enemy Wizard by using a various combination of spells. Show off your witchcraft skills through this arcade game!">
+    <meta name="keywords" content="Wizard Battle, Wizard, Battle">
+    <meta name="author" content="Catalin Mirza">
+    <meta property="og:title" content="[ Wizard Battle ]">
+    <meta property="og:description"
+          content="Defeat the enemy Wizard by using a various combination of spells. Show off your witchcraft skills through this arcade game!">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="[ Wizard Battle ]">
+    <meta property="og:image" content="./assets/social_logo.png">
+    <meta name="twitter:title" content="[ Wizard Battle ]">
+    <meta name="twitter:description"
+          content="Defeat the enemy Wizard by using a various combination of spells. Show off your witchcraft skills through this arcade game!">
+    <meta name="twitter:image" content="./assets/social_logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" sizes="16x16 32x32" href="./assets/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="./styles/extra/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="./styles/extra/micromodal.min.css">
+    <link rel="stylesheet" type="text/css" href="./styles/env.css">
+    <link rel="stylesheet" type="text/css" href="./styles/modal.css">
+    <link rel="stylesheet" type="text/css" href="./styles/game.css">
+    <script type="application/javascript" src="./scripts/underscore.min.js"></script>
+    <script type="application/javascript" src="./scripts/micromodal.min.js"></script>
+    <script type="application/javascript" src="./scripts/react.production.min.js"></script>
+    <script type="application/javascript"
+            src="./scripts/react-dom.production.min.js"></script>
+    <script type="application/javascript" src="./scripts/babel.js"></script>
+</head>
+
+<body>
+
+<div id="wizard-battle"></div>
+
+<script type="text/babel">
+    // Core
+    const coreApp = document.getElementById('wizard-battle');
+    // Global Accessible Data
+    const contextData = {
+        winTitle: "You've Won!",
+        winMessage: "Congratulations! You've won the battle against the other wizard.",
+        loseTitle: "Game Over!",
+        loseMessage: "You've lost the battle, but you can still try again to prove your will of wizardry.",
+        spellTypes: [
+            "water",
+            "fire",
+            "wind"
+        ],
+        spellCombos: [
+            {
+                combo: [
+                    "water",
+                    "water",
+                    "wind"
+                ],
+                damage: 40
+            },
+            {
+                combo: [
+                    "water",
+                    "fire",
+                    "wind"
+                ],
+                damage: 20
+            },
+            {
+                combo: [
+                    "wind",
+                    "water",
+                    "wind"
+                ],
+                damage: 40
+            },
+            {
+                combo: [
+                    "fire",
+                    "water",
+                    "fire"
+                ],
+                damage: 10
+            },
+            {
+                combo: [
+                    "wind",
+                    "water",
+                    "water"
+                ],
+                damage: 20
+            },
+            {
+                combo: [
+                    "water",
+                    "water",
+                    "water"
+                ],
+                damage: 10
+            },
+            {
+                combo: [
+                    "fire",
+                    "fire",
+                    "fire"
+                ],
+                damage: 10
+            },
+            {
+                combo: [
+                    "wind",
+                    "wind",
+                    "wind"
+                ],
+                damage: 10
+            },
+            {
+                combo: [
+                    "fire",
+                    "fire",
+                    "wind"
+                ],
+                damage: 80
+            }
+        ]
+    };
+
+    // The Game React Component that covers the game functionality
+    class WBGame extends React.Component {
+        state = {
+            spellLog: {
+                casted: false,
+                damageDone: 0,
+                damageTaken: 0
+            },
+            playerOne: {
+                hp: 100,
+                rotation: []
+            },
+            playerTwo: {
+                hp: 100,
+                rotation: []
+            },
+            areCasting: false
+        };
+
+        // Renders the Spell Icons
+        renderSpell = (spellType, active) => {
+            switch (spellType) {
+                case "water":
+                    if (active) {
+                        return (
+                            <div className="wb-spell active">
+                                <img src="./assets/gui/spell_water_active.png" alt="Water Spell"/>
+                            </div>
+                        )
+                    } else {
+                        return (
+                            <div className="wb-spell inactive">
+                                <img src="./assets/gui/spell_water_inactive.png" alt="Water Spell"/>
+                            </div>
+                        )
+                    }
+                case "fire":
+                    if (active) {
+                        return (
+                            <div className="wb-spell active">
+                                <img src="./assets/gui/spell_fire_active.png" alt="Fire Spell"/>
+                            </div>
+                        )
+                    } else {
+                        return (
+                            <div className="wb-spell inactive">
+                                <img src="./assets/gui/spell_fire_inactive.png" alt="Fire Spell"/>
+                            </div>
+                        )
+                    }
+                case "wind":
+                    if (active) {
+                        return (
+                            <div className="wb-spell active">
+                                <img src="./assets/gui/spell_wind_active.png" alt="Wind Spell"/>
+                            </div>
+                        )
+                    } else {
+                        return (
+                            <div className="wb-spell inactive">
+                                <img src="./assets/gui/spell_wind_inactive.png" alt="Wind Spell"/>
+                            </div>
+                        )
+                    }
+                default:
+                    break;
+            }
+        };
+
+        // Retrieves Combo Damage based on a Spell Rotation given
+        retrieveComboDamage = (spellRotation) => {
+            for (let i = 0; i < contextData.spellCombos.length; i++) {
+                if (_.isEqual(contextData.spellCombos[i].combo, spellRotation)) {
+                    return contextData.spellCombos[i].damage;
+                }
+            }
+            return 0;
+        };
+
+        // Sets the Spell Rotation for the specific Player (1/2) with the new Spell
+        setSpellRotation = (player, spellType) => {
+            if (player && spellType && (player === 1 || player === 2)) {
+                let tempPlayer, newSpellRotation = [];
+
+                switch (player) {
+                    case 1:
+                        tempPlayer = this.state.playerOne;
+                        break;
+                    case 2:
+                        tempPlayer = this.state.playerTwo;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (tempPlayer.rotation && tempPlayer.rotation.length < 3) {
+                    for (let i = 0; i <= tempPlayer.rotation.length; i++) {
+                        if (tempPlayer.rotation[i]) {
+                            newSpellRotation.push(tempPlayer.rotation[i]);
+                        }
+                    }
+                    newSpellRotation.push(spellType);
+                    tempPlayer.rotation = newSpellRotation;
+                    switch (player) {
+                        case 1:
+                            this.setState({
+                                playerOne: tempPlayer
+                            });
+                            this.setSpellRotation(2, contextData.spellTypes[Math.floor(Math.random() * Math.floor(3))]);
+                            break;
+                        case 2:
+                            this.setState({
+                                playerTwo: tempPlayer
+                            });
+                            if (newSpellRotation.length === 3) {
+                                this.triggerSpellCast();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        };
+
+        // Generates Styles for the HP Bar
+        retrieveHPBarStyles = (hp) => {
+            let bgColor = "var(--wb-palette-D)";
+            if (hp <= 80 && hp >= 40) {
+                bgColor = "var(--wb-palette-B)";
+            } else {
+                if (hp < 40) {
+                    bgColor = "var(--wb-palette-C)";
+                }
+            }
+            return {
+                width: hp + "%",
+                backgroundColor: bgColor
+            }
+        };
+
+        // Retrieves the Spell Rotation for the Battle Log
+        retrieveSpellRotation = (player) => {
+            if (player === 1 || player === 2) {
+                switch (player) {
+                    case 1:
+                        return _.map(this.state.playerOne.rotation, (spellType) => {
+                            return (
+                                <div className="wb-battle-log-spell">
+                                    {this.renderSpell(spellType, false)}
+                                </div>
+                            );
+                        });
+                    case 2:
+                        return _.map(this.state.playerTwo.rotation, (spellType) => {
+                            return (
+                                <div className="wb-battle-log-spell">
+                                    {this.renderSpell(spellType, false)}
+                                </div>
+                            );
+                        });
+                    default:
+                        break;
+                }
+            }
+        };
+
+        // Generates the Log Text for Battle Log
+        generateLogText = () => {
+            if (this.state.spellLog.damageDone) {
+                return "You've hit the Enemy for " + this.state.spellLog.damageDone + " damage.";
+            } else {
+                if (this.state.spellLog.damageTaken) {
+                    return "The Enemy has hit you for " + this.state.spellLog.damageTaken + " damage.";
+                } else {
+                    return "Both attacks have missed!";
+                }
+            }
+        };
+
+        // Spell Casting functionality
+        // * Retrieves Combo Damage
+        // * Compares Combo Damage
+        // * Inflicts Combo Damage to the opponent
+        // * Sets the Battle Log
+        spellCast = () => {
+            let playerOne = this.state.playerOne;
+            let playerOneDamage = this.retrieveComboDamage(playerOne.rotation);
+            let playerTwo = this.state.playerTwo;
+            let playerTwoDamage = this.retrieveComboDamage(playerTwo.rotation);
+
+            if (playerOneDamage > playerTwoDamage) {
+                playerTwoDamage = 0;
+                playerTwo.hp = playerTwo.hp - playerOneDamage;
+                if (playerTwo.hp < 0) {
+                    playerTwo.hp = 0;
+                }
+            } else {
+                if (playerOneDamage < playerTwoDamage) {
+                    playerOneDamage = 0;
+                    playerOne.hp = playerOne.hp - playerTwoDamage;
+                    if (playerOne.hp < 0) {
+                        playerOne.hp = 0;
+                    }
+                } else {
+                    playerOneDamage = 0;
+                    playerTwoDamage = 0;
+                }
+            }
+
+            playerOne.rotation = [];
+            playerTwo.rotation = [];
+
+            this.setState({
+                spellLog: {
+                    casted: true,
+                    damageDone: playerOneDamage > playerTwoDamage ? playerOneDamage : 0,
+                    damageTaken: playerTwoDamage > playerOneDamage ? playerTwoDamage : 0,
+                },
+                playerOne: playerOne,
+                playerTwo: playerTwo
+            });
+
+            setTimeout(() => {
+                if (playerOne.hp === 0) {
+                    this.props.endGame("lost");
+                } else {
+                    if (playerTwo.hp === 0) {
+                        this.props.endGame("won");
+                    }
+                }
+            }, 500);
+        };
+
+        // Triggers the Spell Cast once the criteria has been met (having three Spells chosen for the Spell Combo)
+        triggerSpellCast = () => {
+            if (this.state.playerOne.rotation && this.state.playerOne.rotation.length === 3) {
+                this.setState({
+                    areCasting: true
+                });
+                setTimeout(() => {
+                    this.spellCast();
+                    this.setState({
+                        areCasting: false
+                    });
+                }, 1000);
+            }
+        };
+
+        render() {
+            return (
+                <div className="wb-board">
+                    <div className="wb-board-upper bounceIn">
+                        <div className="wb-player stick-left">
+                            <div className="wb-character stick-left">
+                                <div className="wb-name">
+                                    You
+                                </div>
+                                <div className="wb-avatar">
+                                    <img src="./assets/gui/player_one_avatar.png" alt="Player One - Wizard"/>
+                                </div>
+                                <div className="wb-hp-bar">
+                                    <div className="wb-hp-value"
+                                         style={this.retrieveHPBarStyles(this.state.playerOne.hp)}/>
+                                </div>
+                                <div className="wb-hp-percentage">
+                                    {this.state.playerOne.hp}/100 <span><img src="./assets/gui/heart.png"
+                                                                             alt="Wizard's HP"/></span>
+                                </div>
+                            </div>
+                            <div className="wb-spell-rotation stick-right">
+                                {this.retrieveSpellRotation(1)}
+                            </div>
+                        </div>
+                        <div className="wb-battle-log">
+                            {this.state.spellLog.casted ? (
+                                <div className="wb-battle-log-message">
+                                    {this.generateLogText()}
+                                </div>
+                            ) : ''}
+                        </div>
+                        <div className="wb-player stick-right">
+                            <div className="wb-spell-rotation stick-left">
+                                {this.retrieveSpellRotation(2)}
+                            </div>
+                            <div className="wb-character stick-right">
+                                <div className="wb-name">
+                                    Enemy
+                                </div>
+                                <div className="wb-avatar">
+                                    <img src="./assets/gui/player_two_avatar.png" alt="Player Two - Wizard"/>
+                                </div>
+                                <div className="wb-hp-bar">
+                                    <div className="wb-hp-value"
+                                         style={this.retrieveHPBarStyles(this.state.playerTwo.hp)}/>
+                                </div>
+                                <div className="wb-hp-percentage">
+                                    {this.state.playerTwo.hp}/100 <span><img src="./assets/gui/heart.png"
+                                                                             alt="Wizard's HP"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="wb-board-lower">
+                        {this.state.areCasting ? (
+                            <div className="wb-spell-casting-loader-container">
+                                <div className="wb-spell-casting-loader">
+                                    <div/>
+                                    <div/>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="wb-spell-bar">
+                                <a href="#" className="wb-spell active"
+                                   onClick={() => this.setSpellRotation(1, "water")}>
+                                    <img src="./assets/gui/spell_water_active.png" alt="Water Spell"/>
+                                </a>
+                                <a href="#" className="wb-spell active"
+                                   onClick={() => this.setSpellRotation(1, "fire")}>
+                                    <img src="./assets/gui/spell_fire_active.png" alt="Fire Spell"/>
+                                </a>
+                                <a href="#" className="wb-spell active"
+                                   onClick={() => this.setSpellRotation(1, "wind")}>
+                                    <img src="./assets/gui/spell_wind_active.png" alt="Wind Spell"/>
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    // The Game Container React Component that covers the shell of the game
+    class WBGameContainer extends React.Component {
+        state = {
+            wbState: "",
+            wbProgress: false
+        };
+
+        componentDidMount() {
+            MicroModal.init();
+        };
+
+        // Starts the Game
+        startGame = () => {
+            this.setState({
+                wbState: "",
+                wbProgress: true
+            });
+        };
+
+        // Ends the Game
+        endGame = (gameState) => {
+            this.setState({
+                wbState: gameState,
+                wbProgress: false
+            });
+            MicroModal.init();
+        };
+
+        // Renders the Spell Icons
+        renderSpell = (spellType) => {
+            switch (spellType) {
+                case "water":
+                    return (
+                        <img className="wb-spell-combo-element" src="./assets/gui/spell_water_inactive.png"
+                             alt="Water Spell"/>
+                    );
+                case "fire":
+                    return (
+                        <img className="wb-spell-combo-element" src="./assets/gui/spell_fire_inactive.png"
+                             alt="Fire Spell"/>
+                    );
+                case "wind":
+                    return (
+                        <img className="wb-spell-combo-element" src="./assets/gui/spell_wind_inactive.png"
+                             alt="Wind Spell"/>
+                    );
+                default:
+                    break;
+            }
+        };
+
+        // Renders the Spell Icons from the whole Spell Combo
+        renderCombo = (combo) => {
+            return _.map(combo, (spellType) => {
+                return this.renderSpell(spellType)
+            });
+        };
+
+        // Iterates and renders all available Spell Combos
+        renderSpellCombo = () => {
+            return _.map(contextData.spellCombos, (spellCombo) => {
+                return (
+                    <div className="wb-spell-combo">
+                        <span className="wb-spell-combo-label">Combo:</span>
+                        {this.renderCombo(spellCombo.combo)}
+                        <span className="wb-spell-separator">|</span>
+                        <span className="wb-spell-combo-label">Damage:</span>
+                        <span className="wb-spell-damage">{spellCombo.damage}</span>
+                    </div>
+                )
+            });
+        };
+
+        render() {
+            return (
+                <div className="wb-container">
+                    <div id="modal-wb-sb" className="modal micromodal-slide is-closed" aria-hidden="true">
+                        <div className="modal__overlay" tabIndex="-1" data-micromodal-close="">
+                            <div className="modal__container" role="dialog" aria-modal="true"
+                                 aria-labelledby="modal-wb-sb-title">
+                                <header className="modal__header">
+                                    <h2 className="modal__title" id="modal-wb-sb-title">Spell Book</h2>
+                                    <button className="modal__close" aria-label="Close modal" data-micromodal-close=""/>
+                                </header>
+                                <div className="modal__content" id="modal-wb-sb-content">
+                                    <p>
+                                        Use this Spell Book to learn new spells. Combine the elements in your favour and
+                                        prove yourself to be the best!
+                                    </p>
+                                    <div className="wb-spell-combo-container">
+                                        {this.renderSpellCombo()}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="modal-wb-htp" className="modal micromodal-slide is-closed" aria-hidden="true">
+                        <div className="modal__overlay" tabIndex="-1" data-micromodal-close="">
+                            <div className="modal__container" role="dialog" aria-modal="true"
+                                 aria-labelledby="modal-wb-htp-title">
+                                <header className="modal__header">
+                                    <h2 className="modal__title" id="modal-wb-htp-title">How to Play</h2>
+                                    <button className="modal__close" aria-label="Close modal" data-micromodal-close=""/>
+                                </header>
+                                <div className="modal__content" id="modal-wb-htp-content">
+                                    <p>
+                                        This is a wizardry tale where you have to defeat an evil Wizard. In order to do
+                                        so, you have to combine three elements (Water, Fire, and Wind) to cast
+                                        powerful spells. Each time you cast a spell, the Enemy will also cast one. The
+                                        Wizard casting a stronger spell would deflect the incoming spell from the
+                                        opponent and it would deal damage equal to the difference of both spells'
+                                        damage. For instance, you cast a spell dealing 40 damage, whilst your Enemy
+                                        casts one dealing 20 - it would end up your spell inflicting 20 damage to him
+                                        (40-20). If both Wizards cast spells of the same magnitude in terms of damage,
+                                        then there would be no damage inflicted as both spells miss the attack.
+                                    </p>
+                                    <p>
+                                        Good luck and have fun!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="wb-header">
+                        <div className="wb-logo-container">
+                            <img className="wb-logo bounceIn" src="./assets/logo.png" alt="Wizard Battle"/>
+                        </div>
+                    </div>
+                    <div className="wb-game">
+                        {this.state.wbState && this.state.wbState.length ? (
+                            <div className="wb-content">
+                                {this.state.wbState === 'won' ? (
+                                    <div className="wb-menu">
+                                        <div className="wb-menu-title bounceIn">
+                                            {contextData.winTitle}
+                                        </div>
+                                        <div className="wb-menu-message bounceIn">
+                                            {contextData.winMessage}
+                                        </div>
+                                        <a className="wb-button wb-button-main" href="#" onClick={this.startGame}>
+                                            New Game
+                                        </a>
+                                        <a className="wb-button" href="#" data-micromodal-trigger="modal-wb-sb">
+                                            Spell Book
+                                        </a>
+                                        <a className="wb-button" href="#" data-micromodal-trigger="modal-wb-htp">
+                                            How to Play
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div className="wb-menu">
+                                        <div className="wb-menu-title bounceIn">
+                                            {contextData.loseTitle}
+                                        </div>
+                                        <div className="wb-menu-message bounceIn">
+                                            {contextData.loseMessage}
+                                        </div>
+                                        <a className="wb-button wb-button-main" href="#" onClick={this.startGame}>
+                                            New Game
+                                        </a>
+                                        <a className="wb-button" href="#" data-micromodal-trigger="modal-wb-sb">
+                                            Spell Book
+                                        </a>
+                                        <a className="wb-button" href="#" data-micromodal-trigger="modal-wb-htp">
+                                            How to Play
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="wb-content">
+                                {this.state.wbProgress ? (
+                                    <div className="wb-battle">
+                                        <WBGame endGame={this.endGame}/>
+                                    </div>
+                                ) : (
+                                    <div className="wb-menu">
+                                        <a className="wb-button wb-button-main" href="#" onClick={this.startGame}>
+                                            Start Game
+                                        </a>
+                                        <a className="wb-button" href="#" data-micromodal-trigger="modal-wb-sb">
+                                            Spell Book
+                                        </a>
+                                        <a className="wb-button" href="#" data-micromodal-trigger="modal-wb-htp">
+                                            How to Play
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    function App() {
+        return (
+            <div>
+                <WBGameContainer/>
+            </div>
+        )
+    }
+
+    ReactDOM.render(
+        <App/>,
+        coreApp
+    )
+</script>
+</body>
+</html>

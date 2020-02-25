@@ -1,0 +1,264 @@
+/*
+    [ Wizard Battle ]
+    Contributor: Karmikal Apps
+*/
+
+.wb-container {
+    display: block;
+    width: 100%;
+    min-width: 1600px;
+}
+
+.wb-container .wb-header {
+    display: block;
+    padding: 15px 0;
+}
+
+.wb-container .wb-header .wb-logo-container {
+    display: block;
+}
+
+.wb-container .wb-header .wb-logo-container .wb-logo {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 325px;
+}
+
+.wb-container .wb-game {
+    display: block;
+    margin-top: 15px;
+}
+
+.wb-container .wb-game .wb-content .wb-menu {
+    display: block;
+    margin-top: 25px;
+}
+
+.wb-container .wb-game .wb-content .wb-menu .wb-menu-title {
+    display: block;
+    width: 850px;
+    margin: 10px auto;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--wb-palette-B);
+    letter-spacing: 2px;
+}
+
+.wb-container .wb-game .wb-content .wb-menu .wb-menu-message {
+    display: block;
+    width: 850px;
+    margin: 10px auto 60px auto;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--wb-palette-A);
+}
+
+.wb-container .wb-game .wb-content .wb-menu .wb-button {
+    display: block;
+    width: 200px;
+    margin: 5px auto;
+    padding: 10px 0;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--wb-palette-A);
+    letter-spacing: 2px;
+}
+
+.wb-container .wb-game .wb-content .wb-menu .wb-button.wb-button-main {
+    font-size: 24px;
+    color: var(--wb-palette-F);
+}
+
+.wb-container .wb-game .wb-content .wb-menu .wb-button:hover {
+    color: var(--wb-palette-B);
+    letter-spacing: 4px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board {
+    display: block;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper {
+    display: block;
+    width: 685px;
+    margin: 0 auto;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player {
+    display: inline-block;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-character {
+    display: inline-block;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-name {
+    display: block;
+    margin: 0 auto 15px auto;
+    padding-left: 5px;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--wb-palette-B);
+    letter-spacing: 4px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-avatar {
+    display: block;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-avatar img {
+    width: 125px;
+    height: 125px;
+    border: 5px solid var(--wb-palette-A);
+    border-radius: 50%;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-hp-bar {
+    display: block;
+    margin-top: 15px;
+    width: 130px;
+    height: 15px;
+    border: 2px solid var(--wb-palette-A);
+    border-radius: 5px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-hp-bar .wb-hp-value {
+    display: block;
+    background-color: var(--wb-palette-B);
+    height: 15px;
+    transition: all 0.2s ease-in;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-hp-percentage {
+    display: block;
+    padding-left: 15px;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--wb-palette-B);
+    letter-spacing: 2px;
+    transition: all 0.2s ease-in;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-hp-percentage span {
+    position: relative;
+    top: 5px;
+    left: -5px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-spell-rotation {
+    display: inline-block;
+    width: 30px;
+    height: 90px;
+    padding-top: 65px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-spell-rotation .wb-spell {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-spell-rotation.stick-left {
+    margin-right: 10px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-spell-rotation.stick-right {
+    margin-left: 10px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-player .wb-spell-rotation .wb-spell img {
+    width: 30px;
+    height: 30px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-battle-log {
+    display: inline-block;
+    width: 325px;
+    height: 150px;
+    padding-top: 50px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-upper .wb-battle-log .wb-battle-log-message {
+    display: block;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--wb-palette-B);
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower {
+    display: block;
+    padding: 40px 0;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower .wb-spell-bar {
+    display: block;
+    width: 220px;
+    margin: 0 auto;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower .wb-spell-bar .wb-spell {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower .wb-spell-bar .wb-spell:hover {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower .wb-spell-casting-loader-container {
+    display: block;
+    text-align: center;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower .wb-spell-casting-loader-container .wb-spell-casting-loader {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower .wb-spell-casting-loader-container .wb-spell-casting-loader div {
+    position: absolute;
+    border: 4px solid var(--wb-palette-B);
+    opacity: 1;
+    border-radius: 50%;
+    animation: wb-spell-casting-loader-animation 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.wb-container .wb-game .wb-content .wb-battle .wb-board .wb-board-lower .wb-spell-casting-loader-container .wb-spell-casting-loader div:nth-child(2) {
+    animation-delay: -0.5s;
+}
+
+@keyframes wb-spell-casting-loader-animation {
+    0% {
+        top: 36px;
+        left: 36px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+
+    100% {
+        top: 0px;
+        left: 0px;
+        width: 72px;
+        height: 72px;
+        opacity: 0;
+    }
+}

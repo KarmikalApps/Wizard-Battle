@@ -1,0 +1,80 @@
+/*
+    [ Wizard Battle ]
+    Contributor: Karmikal Apps
+*/
+
+.modal__close {
+    font-size: 24px;
+    outline: none;
+    transition: all 0.2s ease-in;
+}
+
+.modal__close:hover {
+    cursor: pointer;
+    color: var(--wb-palette-C);
+}
+
+.modal__container {
+    background-color: var(--wb-palette-F);
+    -webkit-box-shadow: inset 4px -30px 93px 14px rgba(0, 0, 0, 0.39);
+    -moz-box-shadow: inset 4px -30px 93px 14px rgba(0, 0, 0, 0.39);
+    box-shadow: inset 4px -30px 93px 14px rgba(0, 0, 0, 0.39);
+}
+
+.modal__title {
+    font-family: Helvetica, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--wb-palette-E);
+}
+
+.modal__footer {
+    padding-top: 10px;
+    text-align: center;
+}
+
+.modal__footer .modal__btn {
+    outline: none;
+}
+
+#modal-wb-sb-content .wb-spell-combo-container .wb-spell-combo {
+    display: block;
+    margin: 10px 0;
+    text-align: center;
+}
+
+#modal-wb-sb-content .wb-spell-combo-container .wb-spell-combo .wb-spell-combo-label {
+    vertical-align: top;
+    position: relative;
+    top: 5px;
+    margin-right: 5px;
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--wb-palette-C);
+}
+
+#modal-wb-sb-content .wb-spell-combo-container .wb-spell-combo .wb-spell-combo-element {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 0 2px;
+    border: 1px solid var(--wb-palette-C);
+    border-radius: 50%;
+}
+
+#modal-wb-sb-content .wb-spell-combo-container .wb-spell-combo .wb-spell-separator {
+    vertical-align: top;
+    position: relative;
+    top: 2px;
+    margin: 0 15px;
+}
+
+#modal-wb-sb-content .wb-spell-combo-container .wb-spell-combo .wb-spell-damage {
+    vertical-align: top;
+    position: relative;
+    top: 5px;
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+}
